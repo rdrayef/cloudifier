@@ -2,7 +2,7 @@
 
 ## Overview ℹ️
 
-CloudOps Forger is a web platform designed to provide seamless access to a remote Proxmox server along with its core services. This platform aims to simplify the management and monitoring of Proxmox-based infrastructure by offering an intuitive interface for efficient operations.
+Cloudifier is a web platform designed to provide seamless access to a remote Proxmox server along with its core services. This platform aims to simplify the management and monitoring of Proxmox-based infrastructure by offering an intuitive interface for efficient operations.
 
 ## Features 🚀
 
