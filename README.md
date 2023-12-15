@@ -19,6 +19,7 @@ The primary goal of this project is to streamline the interaction with a Proxmox
 
 ### Prerequisites
 Java
+Nodejs
 
 ### Steps
 
