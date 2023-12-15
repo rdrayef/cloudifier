@@ -1,4 +1,4 @@
-# Cloudifier:Projects 🌐
+# Cloudifier:Project 🌐
 
 ## Overview ℹ️
 
