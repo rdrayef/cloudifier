@@ -1,7 +1,6 @@
 package org.mql.java.business;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ServiceDefault implements Service {
@@ -17,10 +16,10 @@ public class ServiceDefault implements Service {
                 output.append(line).append("\n");
             }
 
-            int exitCode = process.waitFor();
+            //int exitCode = process.waitFor();
 
-            return "Command executed with exit code " + exitCode + "\nOutput:\n" + output.toString();
-		} catch (IOException | InterruptedException e) {
+            return output.toString();
+		} catch (Exception e) {
 			return "Erreur : " + e.getMessage();
 		}
 	}
