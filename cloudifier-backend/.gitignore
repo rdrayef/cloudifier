@@ -1,0 +1,35 @@
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+logs/
+*.log
+*.log.*
+*.access
+*.pid
+
+# Compiled files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Dependency directories
+lib/
+target/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Spring Boot properties
+application*.properties
