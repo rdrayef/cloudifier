@@ -1,6 +1,5 @@
 import { useState } from "react";
 import TextField from "./TextField"
-import { connect, getVms } from "../../config/Connection";
 import './LoginForm.css';
 
 
@@ -13,10 +12,8 @@ const LoginForm = () => {
         setter(data)
     }
     const sendData = () => {
-        connect(username,password);
     }
     const getData = async () => {
-        console.log(await getVms());
     }
 
     return (
