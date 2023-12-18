@@ -15,10 +15,10 @@ class ProxmoxClient {
         const token = getToken();
         if (token) {
           config.headers["Authorization"] = `PVEAuthCookie=${cookies.get(
-            PVEAuthCookie
+            "PVEAuthCookie"
           )}`;
           config.headers["CSRFPreventionToken"] = `${cookies.get(
-            CSRFPreventionToken
+            "CSRFPreventionToken"
           )}`;
         }
         return config;
