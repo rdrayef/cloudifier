@@ -7,6 +7,7 @@ function MachinesPage() {
   const [machines, setMachines] = useState([])
 
   useEffect(() => {
+    console.log("MachinesPage");
     const client = new ProxmoxClient("https://192.168.1.10:8006");
      client.connect("root@pam","rootroot").then((rep) =>{
       if(rep){
