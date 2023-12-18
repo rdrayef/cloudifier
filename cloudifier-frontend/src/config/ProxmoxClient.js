@@ -1,6 +1,7 @@
-import Cookies from "universal-cookie";
 import axios from "axios";
-class ProxmoxClient {
+import Cookies from "universal-cookie";
+
+export default class ProxmoxClient {
   constructor(URL) {
     this.init(URL);
     this.cookies = new Cookies();
@@ -12,14 +13,17 @@ class ProxmoxClient {
     });
     this.instance.interceptors.request.use(
       (config) => {
-        const token = getToken();
-        if (token) {
-          config.headers["Authorization"] = `PVEAuthCookie=${cookies.get(
-            "PVEAuthCookie"
-          )}`;
-          config.headers["CSRFPreventionToken"] = `${cookies.get(
+        const token = {
+          PVEAuthCookie: this.cookies.get("PVEAuthCookie"),
+          CSRFPreventionToken: this.cookies.get("CSRFPreventionToken"),
+        };
+        if (token.CSRFPreventionToken && token.PVEAuthCookie) {
+          config.headers[
+            "Authorization"
+          ] = `PVEAuthCookie=${token.PVEAuthCookie}`;
+          config.headers[
             "CSRFPreventionToken"
-          )}`;
+          ] = `${token.CSRFPreventionToken}`;
         }
         return config;
       },
@@ -35,8 +39,14 @@ class ProxmoxClient {
       password: password,
     });
     const res = await response.data;
-    cookies.set("PVEAuthCookie", res.data.ticket);
-    cookies.set("CSRFPreventionToken", res.data.CSRFPreventionToken);
+    this.cookies.set("PVEAuthCookie", res.data.ticket);
+    this.cookies.set("CSRFPreventionToken", res.data.CSRFPreventionToken);
     return true;
+  }
+
+  async getNodes() {
+    const response = await this.instance.get("/nodes/pve/qemu");
+    const res = await response.data;
+    return res.data;
   }
 }

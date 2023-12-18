@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Menu from "../components/Menu/Menu";
-import MachinesPage from "./MachinesPage";
+import React from "react";
+
 
 function Home() {
 
