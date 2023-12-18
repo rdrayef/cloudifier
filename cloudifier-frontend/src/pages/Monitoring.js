@@ -1,21 +1,21 @@
-import React from "react";
 import { WebSocketProvider } from "../contexts/WebSocketContext";
-import { ServerStatusProvider } from "../contexts/ServerStatusContext";
 import StatusDisplay from "../components/Monitoring/StatusDisplay";
 
-const App = () => {
+const Monitoring = () => {
   useServerStatusObserver();
 
   return (
+    <>
     <WebSocketProvider>
-      <ServerStatusProvider>
+      <ServerStatusProviderder>
         <div>
           <h1>Proxmox Server Monitoring</h1>
           <StatusDisplay />
         </div>
-      </ServerStatusProvider>
+      </ServerStatusProviderder>
     </WebSocketProvider>
+    </>
   );
 };
 
-export default App;
+export default Monitoring;
