@@ -14,7 +14,7 @@ function App() {
   const setIsAuth = useProxmox((state) => state.setIsAuth);
   useEffect(() => {
     async function connect() {
-      const res = await proxmoxClient.connect("root@pam", "rootroot");
+      const res = await proxmoxClient.connect("root@pam", "sayih");
       setIsAuth(res);
     }
     connect();
