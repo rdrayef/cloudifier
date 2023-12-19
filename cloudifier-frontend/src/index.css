@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@font-face {
+    font-family: Tajawal;
+    src: url(../public/fonts/Tajawal-Regular.ttf);
+  }
+  
+  @font-face {
+    font-family: PermanentMarker;
+    src: url(../public/fonts/PermanentMarker-Regular.ttf);
+  }
+  
+  @font-face {
+    font-family: Rubik;
+    src: url(../public/fonts/Rubik-VariableFont_wght.ttf);
+  }
+  
+  @font-face {
+    font-family: TiltNeon;
+    src: url(../public/fonts/TiltNeon-Regular-VariableFont_XROT\,YROT.ttf);
+  }
+  
+  @font-face {
+    font-family: Roboto;
+    src: url(../public/fonts/Roboto-Light.ttf);
+  }
+  
+  @font-face {
+    font-family: Audiowide;
+    src: url(../public/fonts/Audiowide-Regular.ttf);
+  }

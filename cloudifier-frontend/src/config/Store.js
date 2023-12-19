@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 import ProxmoxClient from "./ProxmoxClient";
 
-let client = new ProxmoxClient("https://192.168.1.14:8006");
+let client = new ProxmoxClient("https://192.168.150.133:8006");
 
 const useProxmox = create((set) => ({
   proxmoxClient: client,
