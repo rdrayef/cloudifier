@@ -7,13 +7,12 @@ function MachinesPage() {
   const [machines, setMachines] = useState([])
 
   useEffect(() => {
-    console.log("MachinesPage");
-    const client = new ProxmoxClient("https://192.168.1.10:8006");
-     client.connect("root@pam","rootroot").then((rep) =>{
+    const client = new ProxmoxClient("https://192.168.108.129:8006");
+     client.connect("root@pam","sayih").then((rep) =>{
       if(rep){
-        client.getNodes().then((nodes)=>{
-          console.log(nodes);
-        });
+        client.getImages("one","local").then((data) => {
+          console.log(data);
+        })
       }
      })}
     ,[]);
