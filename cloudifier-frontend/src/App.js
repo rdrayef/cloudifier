@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Home from "./pages/Home";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Menu from "./components/Menu/Menu";
 import MachinesPage from "./pages/MachinesPage";
 import "./App.css";
 import LoginForm from "./components/Forms/LoginForm";
-import Navbar from "./components/Layouts/Navbar";
-import Dashbored from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import useProxmox from "./config/Store";
+import MachineTest from "./pages/MachineTest";
 
 function App() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
@@ -27,7 +26,8 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route path="/machines" component={MachinesPage} />
         <Route path="/login" component={LoginForm} />
-        <Route path="*" component={Dashbored} />
+        <Route path="/test" component={MachineTest} />
+        <Route path="*" component={Dashboard} />
       </Switch>
     </Router>
   );
