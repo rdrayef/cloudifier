@@ -1,18 +1,14 @@
-// import { create } from "zustand";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-// let user = (set) => ({
-//   credential: {},
-//   isAuth: false,
+import ProxmoxClient from "./ProxmoxClient";
 
-//   setIsAuth: (isAuth) => set({ isAuth }), // Update state immutably
-//   setCredential: (credential) =>
-//     set({
-//       Authorization: credential.ticket,
-//       CSRFPreventionToken: credential.CSRFPreventionToken,
-//     }),
-//   logout: () => set({ credential: {}, isAuth: false }, true), // Clear state on logout
-// });
+let client = new ProxmoxClient("https://192.168.1.14:8006");
 
-// const useStore = create(user);
+const useProxmox = create((set) => ({
+  proxmoxClient: client,
+  isAuth: false,
+  setIsAuth: (isAuth) => set({ isAuth }),
+}));
 
-// export default useStore;
+export default useProxmox;

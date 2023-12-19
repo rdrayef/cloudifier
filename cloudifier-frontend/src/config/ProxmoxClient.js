@@ -45,12 +45,12 @@ export default class ProxmoxClient {
   }
 
   async getNodes() {
-    const response = await this.instance.get("/nodes/pve/qemu");
+    const response = await this.instance.get("/nodes/org/qemu");
     const res = await response.data;
     return res.data;
   }
   async getVMs() {
-    const response = await this.instance.get("/nodes/pve/qemu");
+    const response = await this.instance.get("/nodes/org/qemu");
     const res = await response.data;
     return res.data;
   }

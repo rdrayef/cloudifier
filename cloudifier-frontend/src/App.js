@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Menu from "./components/Menu/Menu";
@@ -7,8 +7,19 @@ import "./App.css";
 import LoginForm from "./components/Forms/LoginForm";
 import Navbar from "./components/Layouts/Navbar";
 import Dashbored from "./pages/Dashbored";
+import useProxmox from "./config/Store";
 
 function App() {
+  const proxmoxClient = useProxmox((state) => state.proxmoxClient);
+  const setIsAuth = useProxmox((state) => state.setIsAuth);
+  useEffect(() => {
+    async function connect() {
+      const res = await proxmoxClient.connect("root@pam", "rootroot");
+      setIsAuth(res);
+    }
+    connect();
+  }, []);
+
   return (
     <Router>
       {/* <Menu /> */}

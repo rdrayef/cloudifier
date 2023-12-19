@@ -2,24 +2,36 @@ import { useEffect, useState } from "react";
 import Table from "../components/Layouts/Table"
 import ProxmoxClient from "../config/ProxmoxClient"
 import formatData from "../utils/FormatData";
-const columns=["id","name","status"]
-const rows=[{id:"1",name:"test",status:"running"},{id:"2",name:"test2",status:"running"}]
+import useProxmox from "../config/Store";
 
-
-function TestTable() {
+const TestTable=()=> {
   const [data,setData]=useState([]);
+  const proxmoxClient = useProxmox((state) => state.proxmoxClient);
+
   useEffect(() => {
-    console.log("MachinesPage");
-    const client = new ProxmoxClient("https://192.168.1.10:8006");
-     client.connect("root@pam","rootroot").then((rep) =>{
-      if(rep){
-        client.getNodes().then((nodes)=>{
+    // const client = new ProxmoxClient("https://192.168.1.14:8006");
+    //  client.connect("root@pam","rootroot").then((rep) =>{
+    //   if(rep){
+    //     client.getNodes().then((nodes)=>{
+    //       let data=formatData(nodes,["cpu","name","maxdisk"]);
+    //       setData(data);
+    //     });
+    //   }
+    //  })
+    // proxmoxClient.getNodes().then((nodes)=>{
+    //   let data=formatData(nodes,["cpu","name","maxdisk"]);
+    //   setData(data);
+    // });
+        console.log(proxmoxClient)
+        proxmoxClient.getNodes().then((nodes)=>{
           let data=formatData(nodes,["cpu","name","maxdisk"]);
           setData(data);
         });
-      }
-     })}
-    ,[]);
+      
+    
+
+    }
+    ,[proxmoxClient]);
   if(data.length>0){
     return (
       <div className="App">
