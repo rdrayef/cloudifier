@@ -6,7 +6,7 @@ import MachinesPage from "./pages/MachinesPage";
 import "./App.css";
 import LoginForm from "./components/Forms/LoginForm";
 import Navbar from "./components/Layouts/Navbar";
-import Dashbored from "./pages/Dashbored";
+import Dashbored from "./pages/Dashboard";
 import useProxmox from "./config/Store";
 
 function App() {
