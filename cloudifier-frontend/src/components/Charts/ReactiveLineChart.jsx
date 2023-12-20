@@ -4,8 +4,8 @@ import { getConfigForCharts } from ".";
 
 
 
-export const LineChart = ({objects, ...others}) => {
-
+export const ReactiveLineChart = ({objects, ...others}) => {
+    
     const config = getConfigForCharts(objects);
 
     return (

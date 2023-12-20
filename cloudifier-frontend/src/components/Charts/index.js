@@ -1,4 +1,4 @@
-import { LineChart } from "./LineChart";
+import { ReactiveLineChart } from "./ReactiveLineChart";
 import { Chart as ChartJS, registerables  } from "chart.js";
 
 ChartJS.register(...registerables);
@@ -32,5 +32,5 @@ const getConfigForCharts = (objects)=>{
     return config;
 }
 
-export {LineChart, getConfigForCharts}
+export {ReactiveLineChart, getConfigForCharts}
 

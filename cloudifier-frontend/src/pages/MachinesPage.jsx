@@ -68,6 +68,7 @@ function MachinesPage() {
   },[]);
 
 
+
   return (
     <div>
       <span>Your Machines</span>
