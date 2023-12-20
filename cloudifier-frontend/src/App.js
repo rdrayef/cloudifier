@@ -6,14 +6,16 @@ import "./App.css";
 import LoginForm from "./components/Forms/LoginForm";
 import Dashboard from "./pages/Dashboard";
 import MachineTest from "./pages/MachineTest";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <Router>
+      <ToastContainer />
       {/* <Menu /> */}
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/login" component={LoginForm} />
+        <Route exact path="/" component={LoginForm} />
         <Route path="*" component={Dashboard} />
       </Switch>
     </Router>
