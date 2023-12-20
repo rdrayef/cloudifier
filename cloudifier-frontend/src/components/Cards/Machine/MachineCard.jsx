@@ -34,7 +34,6 @@ const MachineCard = ({ machineData }) => {
           <p>CPU: {machineData.cpu}</p>
           <p>Memory: {machineData.mem}</p>
           <p>Disk: {machineData.disk}</p>
-          {/* Add more details as needed */}
         </div>
       )}
     </div>

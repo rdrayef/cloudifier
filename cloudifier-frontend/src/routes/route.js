@@ -1,9 +1,10 @@
+import MachinesTable from "../components/Tables/MachinesTable";
 import MachinesPage from "../pages/MachinesPage";
 import TestTable from "../pages/TestTable";
 
 const routes = [
-  { path: "/vms", component: MachinesPage },
-  { path: "/tableTest", component: TestTable },
+  { path: "/machines", component: MachinesPage },
+  { path: "/tableTest", component: MachinesTable },
 ];
 
 export default routes;

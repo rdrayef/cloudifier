@@ -44,10 +44,10 @@ export default class ProxmoxClient {
       this.cookies.set("CSRFPreventionToken", res.data.CSRFPreventionToken);
       return true;
     } catch (error) {
-      console.error("Connection error:", error);
-      throw error;
+      return false;
     }
   }
+
 
   async getClusterResources(type = '') {
     try {
@@ -71,7 +71,7 @@ export default class ProxmoxClient {
       console.error("Error getting nodes:", error);
       throw error;
     }
-  }
+ }
 
   async createVM(node, vmid, name, iso) {
     try {
