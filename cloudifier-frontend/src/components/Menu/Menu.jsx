@@ -5,10 +5,16 @@ import LoginForm from "../Forms/LoginForm";
 
 const Menu = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showServicesMenu, setShowServicesMenu] = useState(false);
+
 
   const toggleLoginForm = () => {
     console.log("Login Page");
     setShowLoginForm(!showLoginForm);
+  };
+
+  const toggleServicesMenu = () => {
+    setShowServicesMenu(!showServicesMenu);
   };
 
   return (
@@ -26,11 +32,22 @@ const Menu = () => {
         <Link to="/machines" className="menu-link">
           Machines
         </Link>
+        <span className="menu-link" onClick={toggleServicesMenu}>
+          Services
+          {showServicesMenu && (
+            <div className="submenu">
+              <Link to="/storage" className="submenu-link">
+                Storage
+              </Link>
+              <Link to="/database" className="submenu-link">
+                Database
+              </Link>
+              {/* Add other service links */}
+            </div>
+          )}
+        </span>
         <Link to="/storage" className="menu-link">
-          Storage
-        </Link>
-        <Link to="/database" className="menu-link">
-          Database
+          About us
         </Link>
       </div>
 

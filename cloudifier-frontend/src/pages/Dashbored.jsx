@@ -4,6 +4,7 @@ import routes from "../routes/route.js";
 import Menu from "../components/Menu/Menu.jsx";
 export default function Dashbored() {
   useEffect(() => {
+    console.log("fffff")
   }, []);
 
   return (
