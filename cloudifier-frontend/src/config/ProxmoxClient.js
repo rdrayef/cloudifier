@@ -54,4 +54,38 @@ export default class ProxmoxClient {
     const res = await response.data;
     return res.data;
   }
+  async createVM(node, vmid, name, iso) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu`, {
+        node: node,
+        vmid: vmid,
+        name: name,
+        ide1: `file=${iso},media=cdrom`,
+        kvm: false,
+      });
+      const res = await response.data;
+      return res.data;
+    } catch (error) {
+      console.error(`Error creating VM on node ${node}:, error`);
+      throw error;
+    }
+  }
+
+  async getImages(node, storage) {
+    try {
+      const response = await this.instance.get(
+        `/nodes/${node}/storage/${storage}/content`
+      );
+      const contentList = await response.data.data.filter(
+        (entry) => entry.format === "iso"
+      );
+      return contentList;
+    } catch (error) {
+      console.error(
+        `Error fetching images from storage ${storage} on node ${node}:`,
+        error
+      );
+      throw error;
+    }
+  }
 }

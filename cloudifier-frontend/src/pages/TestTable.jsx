@@ -24,7 +24,7 @@ const TestTable=()=> {
     // });
         console.log(proxmoxClient)
         proxmoxClient.getNodes().then((nodes)=>{
-          let data=formatData(nodes,["cpu","name","maxdisk"]);
+          let data=formatData(nodes,["cpu","name","maxdisk","vmid"]);
           setData(data);
         });
       

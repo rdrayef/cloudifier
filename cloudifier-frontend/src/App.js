@@ -8,20 +8,29 @@ import LoginForm from "./components/Forms/LoginForm";
 import Navbar from "./components/Layouts/Navbar";
 import Dashbored from "./pages/Dashboard";
 import useProxmox from "./config/Store";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
   const setIsAuth = useProxmox((state) => state.setIsAuth);
   useEffect(() => {
+    console.log("App.js: useEffect");
     async function connect() {
       const res = await proxmoxClient.connect("root@pam", "rootroot");
       setIsAuth(res);
     }
+    async function getTemplate() {
+      const res = await proxmoxClient.getImages("org", "local");
+      console.log("oloo:", res);
+    }
     connect();
+    getTemplate();
   }, []);
 
   return (
     <Router>
+      <ToastContainer />
       {/* <Menu /> */}
       <Switch>
         <Route exact path="/" component={Home} />
