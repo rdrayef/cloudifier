@@ -2,7 +2,6 @@ import React from "react";
 import TableLine from "./TableLine";
 
 function MachinesTable({ title, machines }) {
-  console.log(machines);
   return (
     <>
       <link

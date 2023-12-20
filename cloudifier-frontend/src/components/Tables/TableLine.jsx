@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import formatDiskData from "../../utils/FormatDiskData";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
+import useProxmox from "../../config/Store";
 
 export default function TableLine({ machine }) {
-  const handleStartStop = (machineId) => {
-  };
-
-
   return (
     <tr className="border-b border-dashed last:border-b-0">
       <td className="p-3 pl-0">
@@ -58,25 +55,18 @@ export default function TableLine({ machine }) {
         </span>
       </td>
       <td className="pr-12 text-start">
-        {machine.status === "stopped" ? (
-          <button
-            onClick={() => handleStartStop(machine.vmid)}
-            className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
-          >
-            <span className="flex items-center justify-center p-0 m-0 leading-none shrink-0 ">
+        <button
+          onClick={() => machine.caller(machine)}
+          className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
+        >
+          <span className="flex items-center justify-center p-0 m-0 leading-none shrink-0 ">
+            {machine.status === "stopped" ? (
               <PlayIcon className="w-5 h-5 text-green-500" />
-            </span>
-          </button>
-        ) : (
-          <button
-            onClick={() => handleStartStop(machine.vmid)}
-            className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
-          >
-            <span className="flex items-center justify-center p-0 m-0 leading-none shrink-0 ">
+            ) : (
               <StopIcon className="w-5 h-5 text-red-500" />
-            </span>
-          </button>
-        )}
+            )}
+          </span>
+        </button>
       </td>
       <td className="p-3 pr-0 ">
         <button className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center">
