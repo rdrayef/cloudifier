@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import MachinesTable from "../components/Tables/MachinesTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import useProxmox from "../config/Store";
-import formatData from "../utils/FormatData";
 
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);

@@ -2,11 +2,7 @@ import { useEffect } from "react";
 import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import routes from "../routes/route.js";
 import Menu from "../components/Menu/Menu.jsx";
-export default function Dashbored() {
-  useEffect(() => {
-    console.log("fffff")
-  }, []);
-
+export default function Dashboard() {
   return (
     <div>
       <Menu />

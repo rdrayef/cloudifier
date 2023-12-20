@@ -8,15 +8,12 @@ import Dashboard from "./pages/Dashboard";
 import MachineTest from "./pages/MachineTest";
 
 function App() {
-  
   return (
     <Router>
       {/* <Menu /> */}
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/machines" component={MachinesPage} />
         <Route path="/login" component={LoginForm} />
-        <Route path="/test" component={MachineTest} />
         <Route path="*" component={Dashboard} />
       </Switch>
     </Router>
