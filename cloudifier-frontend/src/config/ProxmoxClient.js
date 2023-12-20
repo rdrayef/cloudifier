@@ -60,53 +60,49 @@ export default class ProxmoxClient {
       throw error;
     }
   }
-
-  async getImages(node, storage) {
-    try {
-      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
-      const contentList = await response.data.data.filter(entry => entry.format === 'iso');
-      return contentList;
-    } catch (error) {
-      console.error(`Error fetching images from storage ${storage} on node ${node}:`, error);
-      throw error;
-    }
-  }
-
-  async getTemplates(node, storage) {
-    try {
-      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
-      const contentList = await response.data.data.filter(entry => entry.content === 'vztmpl');
-      return contentList;
-    } catch (error) {
-      console.error(`Error fetching templates from storage ${storage} on node ${node}:`, error);
-      throw error;
-    }
-  }
-
-  async getBackups(node, storage) {
-    try {
-      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
-      const contentList = await response.data.data.filter(entry => entry.content === 'backup');
-      return contentList;
-    } catch (error) {
-      console.error(`Error fetching backups from storage ${storage} on node ${node}:`, error);
-      throw error;
-    }
-  }
   
-
-  async getNodes() {
+  async getNodesList() {
     try {
       const response = await this.instance.get("/nodes");
       const res = await response.data;
-      return res.data;
+      const nodeIds = res.data.map(node => node.id.split("node/")[1]);
+      return nodeIds;
     } catch (error) {
       console.error("Error getting nodes:", error);
       throw error;
     }
   }
 
-  async getVMs(node) {
+  async createVM(node, vmid, name, iso) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu`, {
+        node: node,
+        vmid: vmid,
+        name: name,
+        ide1: `file=${iso},media=cdrom`,
+        kvm:false
+      });
+      const res = await response.data;
+      return res.data;
+    } catch (error) {
+      console.error(`Error creating VM on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async getNodeStatus(node) {
+    try {
+      const response = await this.instance.get(`/nodes/${node}/status`);
+      const nodeObject = await response.data.data;
+  
+      return nodeObject;
+    } catch (error) {
+      console.error(`Error getting node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async getVMList(node) {
     try {
       const response = await this.instance.get(`/nodes/${node}/qemu`);
       const res = await response.data;
@@ -117,19 +113,113 @@ export default class ProxmoxClient {
     }
   }
 
-  async createVM(node, vmid) {
+  async getVMStatus(node, vmid) {
     try {
-      const response = await this.instance.post(`/nodes/${node}/qemu`, {
-        vmid: vmid
-      });
-      const res = await response.data;
-      return res.data;
+      const response = await this.instance.get(`/nodes/${node}/qemu/${vmid}/status/current`);
+      return response.data.data;
     } catch (error) {
-      console.error(`Error creating VM on node ${node}:`, error);
+      console.error(`Error getting status for VM ${vmid} on node ${node}:`, error);
       throw error;
     }
   }
 
+  async startVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/start`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error starting VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async stopVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/stop`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error stopping VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  } 
+  
+  async suspendVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/suspend`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error suspending VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async resumeVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/resume`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error resuming VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }  
+
+  async shutdownVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/shutdown`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error shutting down VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async resetVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/reset`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error resetting VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async rebootVM(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/status/reboot`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error rebooting VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async cloneVM(node, vmid, newid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/clone`, {
+        newid: newid
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error cloning VM ${vmid} on node ${node} to ${newid}:`, error);
+      throw error;
+    }
+  }
+  
+  async restoreVM(node, vmid, archive) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/qemu`, {
+        vmid: vmid,
+        archive: archive,
+        'live-restore': true,
+      });
+      const res = await response.data;
+      return res.data;
+    } catch (error) {
+      console.error(`Error restoring VM ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
   async migrateVM(node, vmid, target) {
     try {
       const response = await this.instance.post(`/nodes/${node}/qemu/${vmid}/migrate`, {
@@ -139,19 +229,6 @@ export default class ProxmoxClient {
       return res.data;
     } catch (error) {
       console.error(`Error migrating VM ${vmid} from node ${node} to ${target}:`, error);
-      throw error;
-    }
-  }
-  
-  async backupAll(node) {
-    try {
-      const response = await this.instance.post(`/nodes/${node}/vzdump`, {
-        all: true,
-      });
-      const res = await response.data;
-      return res.data;
-    } catch (error) {
-      console.error(`Error creating backup of all VMs on node ${node}:`, error);
       throw error;
     }
   }
@@ -169,23 +246,20 @@ export default class ProxmoxClient {
     }
   }
 
-  async restoreVM(node, vmid,archive) {
+  async backupAllVMs(node) {
     try {
-      const response = await this.instance.post(`/nodes/${node}/qemu`, {
-        vmid: vmid,
-        archive: archive,
-        'live-restore': true,
-      });
+      const response = await this.instance.post(`/nodes/${node}/vzdump`, {
+        all: true,
+      });  
       const res = await response.data;
       return res.data;
     } catch (error) {
-      console.error(`Error restoring VM ${vmid} on node ${node}:`, error);
+      console.error(`Error creating backup of all VMs on node ${node}:`, error);
       throw error;
-    }
-  }
+    }  
+  }  
   
-
-  async getLXCs(node) {
+  async getContainersList(node) {
     try {
       const response = await this.instance.get(`/nodes/${node}/lxc`);
       const res = await response.data;
@@ -195,19 +269,151 @@ export default class ProxmoxClient {
       throw error;
     }
   }
-  
-  async createLXC(node, ostemplate, vmid, rootfs = 'local-lvm:8') {
+
+  async createContainer(node, vmid, ostemplate) {
     try {
-      const requestData = {
+      const response = await this.instance.post(`/nodes/${node}/lxc`, {
         ostemplate: ostemplate,
         vmid: vmid,
-        rootfs: rootfs,
-      };
-      const response = await this.instance.post(`/nodes/${node}/lxc`, requestData);
+        rootfs : 'local-lvm:8'
+      });
       const res = await response.data;
       return res.data;
     } catch (error) {
       console.error(`Error creating or restoring container on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async getContainerStatus(node, vmid) {
+    try {
+      const response = await this.instance.get(`/nodes/${node}/lxc/${vmid}/status/current`);
+      return response.data.data;
+    } catch (error) {
+      console.error(`Error fetching status for container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async startContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/start`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error starting container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async stopContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/stop`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error stopping container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async suspendContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/suspend`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error suspending container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async resumeContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/resume`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error resuming container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async shutdownContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/shutdown`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error shutting down container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async rebootContainer(node, vmid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/status/reboot`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error rebooting container ${vmid} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async cloneContainer(node, vmid, newid) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/clone`, {
+        newid: newid
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error cloning container ${vmid} on node ${node} to ${newid}:`, error);
+      throw error;
+    }
+  }
+
+  async migrateContainer(node, vmid, target) {
+    try {
+      const response = await this.instance.post(`/nodes/${node}/lxc/${vmid}/migrate`, {
+        target: target
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error migrating container ${vmid} from node ${node} to ${target}:`, error);
+      throw error;
+    }
+  }
+  
+  async getISOImages(node, storage) {
+    try {
+      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
+      const contentList = response.data.data
+        .filter(entry => entry.format === 'iso')
+        .map(entry => entry.volid);
+      return contentList;
+    } catch (error) {
+      console.error(`Error fetching images from storage ${storage} on node ${node}:`, error);
+      throw error;
+    }
+  }
+  
+  async getContainerTemplates(node, storage) {
+    try {
+      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
+      const contentList = response.data.data
+        .filter(entry => entry.content === 'vztmpl')
+        .map(entry => entry.volid);
+      return contentList;
+    } catch (error) {
+      console.error(`Error fetching templates from storage ${storage} on node ${node}:`, error);
+      throw error;
+    }
+  }
+
+  async getBackups(node, storage) {
+    try {
+      const response = await this.instance.get(`/nodes/${node}/storage/${storage}/content`);
+      const contentList = await response.data.data
+      .filter(entry => entry.content === 'backup')
+      .map(entry => entry.volid);
+      return contentList;
+    } catch (error) {
+      console.error(`Error fetching backups from storage ${storage} on node ${node}:`, error);
       throw error;
     }
   }
