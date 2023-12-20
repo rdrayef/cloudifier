@@ -11,6 +11,8 @@ import useProxmox from "./config/Store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { ThemeProvider } from "@material-tailwind/react";
+
 function App() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
   const setIsAuth = useProxmox((state) => state.setIsAuth);
@@ -31,6 +33,8 @@ function App() {
   return (
     <Router>
       <ToastContainer />
+
+      {/* <ThemeProvider> */}
       {/* <Menu /> */}
       <Switch>
         <Route exact path="/" component={Home} />
