@@ -44,8 +44,7 @@ export default class ProxmoxClient {
       this.cookies.set("CSRFPreventionToken", res.data.CSRFPreventionToken);
       return true;
     } catch (error) {
-      console.error("Connection error:", error);
-      throw error;
+      return false;
     }
   }
 

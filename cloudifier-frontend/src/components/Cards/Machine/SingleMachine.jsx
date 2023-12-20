@@ -5,7 +5,7 @@ import useProxmox from "../../../config/Store";
 const SingleMachine = () => {
 
   const proxmoxClient = useProxmox((state) => state.proxmoxClient)
-  const data = useReactiveData(10,proxmoxClient)
+  const data = useReactiveData(10,proxmoxClient.getNodeStatus())
 
 
 
