@@ -16,5 +16,5 @@ export default function useToast() {
   const setToastPosition = (position) => {
     setPosition(position);
   };
-  return { showToast, setToastPosition };
+  return { setToastPosition };
 }

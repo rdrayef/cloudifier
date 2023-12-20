@@ -1,24 +1,10 @@
 import React, { useEffect, useState } from "react";
-import MachineCard from "../components/Cards/Machine/MachineCard";
-import ProxmoxClient from "../config/ProxmoxClient";
 import MachinesTable from "../components/Tables/MachinesTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
-function MachinesPage() {
-  //const [machines, setMachines] = useState([])
 
-  /*   useEffect(() => {
-    console.log("MachinesPage");
-    const client = new ProxmoxClient("https://192.168.1.10:8006");
-     client.connect("root@pam","rootroot").then((rep) =>{
-      if(rep){
-        client.getNodes().then((nodes)=>{
-          console.log(nodes);
-        });
-      }
-     })}
-    ,[]);
- */
+function MachinesPage() {
+
 
   const machines = [
     {
