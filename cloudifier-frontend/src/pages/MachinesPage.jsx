@@ -7,68 +7,9 @@ import FormatIso from "../utils/FormatIso";
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
   const [listIso, setListIso] = useState([]);
-  useEffect(() => {
-    async function iso() {
-      const res = await proxmoxClient.getISOImages("org", "local");
-      const formatedIso = FormatIso(res);
-      setListIso(formatedIso);
-    }
-    iso();
-  }, []);
-  const refetchMachines = () => {
-    async function getMachines() {
-      let machines = await proxmoxClient.getVMList("org");
-      machines = machines.map((m) => ({
-        ...m,
-        caller: handleStartStopVM,
-      }));
-      setMachines(machines);
-    }
-    getMachines();
-  };
   const [machines, setMachines] = useState([]);
   const [containers, setContainers] = useState([]);
-  const handleStartStopVM = (machine, start, stop) => {
-    let data = null;
-    if (machine.status === "stopped") {
-      proxmoxClient.startVM("org", machine.vmid).then((res) => {
-        refetchMachines();
-      });
 
-      // update the status of the machine
-    } else {
-      proxmoxClient.stopVM("org", machine.vmid).then((res) => {
-        setMachines((prev) => {
-          refetchMachines();
-        });
-      });
-    }
-  };
-
-  const handleStartStopLXC = (machine, start, stop) => {
-    let data = null;
-    if (machine.status === "stopped") {
-      proxmoxClient.startContainer("org", machine.vmid).then((res) => {
-        setContainers((prev) => {
-          prev.forEach((m) => {
-            if (m.vmid == machine.vmid) m.status = "running";
-          });
-          return [...prev];
-        });
-      });
-
-      // update the status of the machine
-    } else {
-      proxmoxClient.stopContainer("org", machine.vmid).then((res) => {
-        setContainers((prev) => {
-          prev.forEach((m) => {
-            if (m.vmid == machine.vmid) m.status = "stopped";
-          });
-          return [...prev];
-        });
-      });
-    }
-  };
   useEffect(() => {
     async function getMachines() {
       let machines = await proxmoxClient.getVMList("org");
@@ -86,6 +27,12 @@ function MachinesPage() {
       }));
       setContainers(containers);
     }
+    async function iso() {
+      const res = await proxmoxClient.getISOImages("org", "local");
+      const formatedIso = FormatIso(res);
+      setListIso(formatedIso);
+    }
+    iso();
     getMachines();
     getContainers();
   }, []);
