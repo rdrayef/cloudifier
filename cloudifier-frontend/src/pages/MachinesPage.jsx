@@ -8,33 +8,36 @@ function MachinesPage() {
   const [machines, setMachines] = useState([]);
   const [containers, setContainers] = useState([]);
   const [intervalId, setIntervalId] = useState(null);
-
+  const [listIso, setListIso] = useState([]); // [{label: "Ubuntu", value: "local:iso/ubuntu-22.04.3-live-server-amd64.iso"}
   const refetchMachines = async () => {
     try {
       let machines = await proxmoxClient.getVMList("org");
-      machines = machines.map((m) => ({
-        ...m,
-        caller: handleStartStopVM,
-      })).sort((a, b) =>  a.name.localeCompare(b.name));
+      machines = machines
+        .map((m) => ({
+          ...m,
+          caller: handleStartStopVM,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
       setMachines(machines);
     } catch (error) {
       console.error("Error fetching machines:", error);
     }
   };
 
-
   const refetchContainers = async () => {
     try {
-    let containers = await proxmoxClient.getContainersList("org");
-      containers = containers.map((m) => ({
-        ...m,
-        caller: handleStartStopLXC,
-      })).sort((a, b) =>  a.name.localeCompare(b.name));;
-      setContainers(containers);}
-      catch (error) {
-        console.error("Error fetching machines:", error);
-      }
-  }
+      let containers = await proxmoxClient.getContainersList("org");
+      containers = containers
+        .map((m) => ({
+          ...m,
+          caller: handleStartStopLXC,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setContainers(containers);
+    } catch (error) {
+      console.error("Error fetching machines:", error);
+    }
+  };
 
   const handleStartStopVM = (machine, start, stop) => {
     const actionPromise =
@@ -63,12 +66,17 @@ function MachinesPage() {
       await refetchMachines();
       await refetchContainers();
     };
+    async function iso() {
+      const res = await proxmoxClient.getISOImages("org", "local");
+      const formatedIso = FormatIso(res);
+      setListIso(formatedIso);
+    }
+    iso();
     fetchData();
     const id = setInterval(fetchData, 1000);
     setIntervalId(id);
     return () => clearInterval(id);
-  }, []); 
-
+  }, []);
 
   return (
     <div className="mx-auto mt-5">
@@ -99,4 +107,4 @@ function MachinesPage() {
   );
 }
 
-export default MachinesPage;
+export default MachinesPage;
