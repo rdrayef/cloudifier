@@ -70,6 +70,9 @@ function MachinesPage() {
   }, []); 
 
 
+
+
+  //Add component <CreateBackup /> he has as props  {vmid ,...}
   return (
     <div className="mx-auto mt-5">
       <Tabs className="border-b bg-gray-100 rounded- h-screen">
