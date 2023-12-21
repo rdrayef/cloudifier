@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import useProxmox from '../../config/Store';
+import { useState, useEffect } from "react";
+import useProxmox from "../../config/Store";
 
-export const useReactiveData = (node, vmid, length) => { 
+export const useReactiveData = (node, vmid, length) => {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
   const [data, setData] = useState([]);
 
@@ -22,7 +22,7 @@ export const useReactiveData = (node, vmid, length) => {
         setData((prevData) => prevData.slice(1));
       }
     } catch (error) {
-      console.error('Error updating chart:', error);
+      console.error("Error updating chart:", error);
     }
   };
 

@@ -14,7 +14,7 @@ export default class ProxmoxClient {
     this.instance.interceptors.request.use(
       (config) => {
         const token = {
-          PVEAuthCookie: this.cookies.get("PVEAuthCookie"),
+          PVEAuthCookie: this.cookies.get("Token"),
           CSRFPreventionToken: this.cookies.get("CSRFPreventionToken"),
         };
         if (token.CSRFPreventionToken && token.PVEAuthCookie) {
@@ -40,7 +40,7 @@ export default class ProxmoxClient {
         password: password,
       });
       const res = await response.data;
-      this.cookies.set("PVEAuthCookie", res.data.ticket);
+      this.cookies.set("Token", res.data.ticket);
       this.cookies.set("CSRFPreventionToken", res.data.CSRFPreventionToken);
       return true;
     } catch (error) {
