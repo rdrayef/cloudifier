@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import formatDiskData from "../../utils/FormatDiskData";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
-import useProxmox from "../../config/Store";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function TableLine({ machine }) {
+  const history = useHistory();
+
+  const moreDetails = () => {
+    history.push({
+      pathname: "/machine-details", 
+      state: { vmid : machine.vmid }, 
+     });
+    console.log(machine)
+  }
+
   return (
     <tr className="border-b border-dashed last:border-b-0">
       <td className="p-3 pl-0">
@@ -69,7 +79,9 @@ export default function TableLine({ machine }) {
         </button>
       </td>
       <td className="p-3 pr-0 ">
-        <button className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center">
+        <button className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
+          onClick={()=>moreDetails()}
+        >
           <span className="flex items-center justify-center p-0 m-0 leading-none shrink-0 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"

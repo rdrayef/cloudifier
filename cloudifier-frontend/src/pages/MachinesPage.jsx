@@ -6,35 +6,77 @@ import ModalForm from "../components/modal/ModalForm";
 import FormatIso from "../utils/FormatIso";
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
-  const [listIso, setListIso] = useState([]);
   const [machines, setMachines] = useState([]);
   const [containers, setContainers] = useState([]);
+  const [intervalId, setIntervalId] = useState(null);
+  const [listIso, setListIso] = useState([]); // [{label: "Ubuntu", value: "local:iso/ubuntu-22.04.3-live-server-amd64.iso"}
+  const refetchMachines = async () => {
+    try {
+      let machines = await proxmoxClient.getVMList("org");
+      machines = machines
+        .map((m) => ({
+          ...m,
+          caller: handleStartStopVM,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setMachines(machines);
+    } catch (error) {
+      console.error("Error fetching machines:", error);
+    }
+  };
+
+  const refetchContainers = async () => {
+    try {
+      let containers = await proxmoxClient.getContainersList("org");
+      containers = containers
+        .map((m) => ({
+          ...m,
+          caller: handleStartStopLXC,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setContainers(containers);
+    } catch (error) {
+      console.error("Error fetching machines:", error);
+    }
+  };
+
+  const handleStartStopVM = (machine, start, stop) => {
+    const actionPromise =
+      machine.status === "stopped"
+        ? proxmoxClient.startVM("org", machine.vmid)
+        : proxmoxClient.stopVM("org", machine.vmid);
+
+    actionPromise.then((res) => {
+      refetchMachines();
+    });
+  };
+
+  const handleStartStopLXC = (machine, start, stop) => {
+    const actionPromise =
+      machine.status === "stopped"
+        ? proxmoxClient.startContainer("org", machine.vmid)
+        : proxmoxClient.stopContainer("org", machine.vmid);
+
+    actionPromise.then((res) => {
+      refetchContainers();
+    });
+  };
 
   useEffect(() => {
-    async function getMachines() {
-      let machines = await proxmoxClient.getVMList("org");
-      machines = machines.map((m) => ({
-        ...m,
-        caller: handleStartStopVM,
-      }));
-      setMachines(machines);
-    }
-    async function getContainers() {
-      let containers = await proxmoxClient.getContainersList("org");
-      containers = containers.map((m) => ({
-        ...m,
-        caller: handleStartStopLXC,
-      }));
-      setContainers(containers);
-    }
+    const fetchData = async () => {
+      await refetchMachines();
+      await refetchContainers();
+    };
     async function iso() {
       const res = await proxmoxClient.getISOImages("org", "local");
       const formatedIso = FormatIso(res);
       setListIso(formatedIso);
     }
     iso();
-    getMachines();
-    getContainers();
+    fetchData();
+    const id = setInterval(fetchData, 1000);
+    setIntervalId(id);
+    return () => clearInterval(id);
   }, []);
 
   return (

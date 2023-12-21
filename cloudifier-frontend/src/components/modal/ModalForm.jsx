@@ -38,7 +38,7 @@ const ModalForm = ({ images, refetch }) => {
   return (
     <div>
       <button onClick={openModal} className="bg-blue-500 text-white py-2 px-4">
-        Open Modal
+        Create Machine
       </button>
 
       {isOpen && (
@@ -109,7 +109,7 @@ const ModalForm = ({ images, refetch }) => {
                       class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                       id="grid-first-name"
                       type="text"
-                      placeholder="Jane"
+                      placeholder="VMID"
                       {...register("idMachine", { required: true })}
                     />
                   </div>

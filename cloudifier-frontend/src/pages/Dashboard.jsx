@@ -9,24 +9,27 @@ export default function Dashboard() {
   const { showToast, setToastPosition } = useToast();
   const history = useHistory();
   useEffect(() => {
-    // if (!isAuth) {
-    //   history.push("/");
-    //   showToast("You need to login first", "error");
-    // }
+
+    if (!isAuth) {
+      history.push("/login");
+
+      showToast("You need to login first", "error");
+    }
   }, []);
   return (
     <div>
-      <Menu />
-      <div className="container">
-        {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            component={route.component}
-          />
-        ))}
-      </div>
+      {isAuth && (
+        <div className="container">
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              component={route.component}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
