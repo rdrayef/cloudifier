@@ -57,38 +57,67 @@ function MachinesPage() {
         });
       });
 
-      // update the status of the machine
-    } else {
-      proxmoxClient.stopContainer("org", machine.vmid).then((res) => {
-        setContainers((prev) => {
-          prev.forEach((m) => {
-            if (m.vmid == machine.vmid) m.status = "stopped";
-          });
-          return [...prev];
-        });
-      });
-    }
-  };
-  useEffect(() => {
-    async function getMachines() {
+
+  const refetchMachines = async () => {
+    try {
       let machines = await proxmoxClient.getVMList("org");
       machines = machines.map((m) => ({
         ...m,
         caller: handleStartStopVM,
-      }));
+      })).sort((a, b) =>  a.name.localeCompare(b.name));
       setMachines(machines);
+    } catch (error) {
+      console.error("Error fetching machines:", error);
     }
-    async function getContainers() {
-      let containers = await proxmoxClient.getContainersList("org");
+  };
+
+
+  const refetchContainers = async () => {
+    try {
+    let containers = await proxmoxClient.getContainersList("org");
       containers = containers.map((m) => ({
         ...m,
         caller: handleStartStopLXC,
-      }));
-      setContainers(containers);
-    }
-    getMachines();
-    getContainers();
-  }, []);
+      })).sort((a, b) =>  a.name.localeCompare(b.name));;
+      setContainers(containers);}
+      catch (error) {
+        console.error("Error fetching machines:", error);
+      }
+  }
+
+  const handleStartStopVM = (machine, start, stop) => {
+    const actionPromise =
+      machine.status === "stopped"
+        ? proxmoxClient.startVM("org", machine.vmid)
+        : proxmoxClient.stopVM("org", machine.vmid);
+
+    actionPromise.then((res) => {
+      refetchMachines();
+    });
+  };
+
+  const handleStartStopLXC = (machine, start, stop) => {
+    const actionPromise =
+      machine.status === "stopped"
+        ? proxmoxClient.startContainer("org", machine.vmid)
+        : proxmoxClient.stopContainer("org", machine.vmid);
+
+    actionPromise.then((res) => {
+      refetchContainers();
+    });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await refetchMachines();
+      await refetchContainers();
+    };
+    fetchData();
+    const id = setInterval(fetchData, 1000);
+    setIntervalId(id);
+    return () => clearInterval(id);
+  }, []); 
+
 
   return (
     <div className="mx-auto mt-5">
@@ -127,4 +156,4 @@ function MachinesPage() {
   );
 }
 
-export default MachinesPage;
+export default MachinesPage;

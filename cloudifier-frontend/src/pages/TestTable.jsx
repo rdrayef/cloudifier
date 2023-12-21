@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Table from "../components/Layouts/Table";
-import ProxmoxClient from "../config/ProxmoxClient";
 import formatData from "../utils/FormatData";
 import useProxmox from "../config/Store";
 
@@ -9,19 +8,6 @@ const TestTable = () => {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
 
   useEffect(() => {
-    // const client = new ProxmoxClient("https://192.168.1.14:8006");
-    //  client.connect("root@pam","rootroot").then((rep) =>{
-    //   if(rep){
-    //     client.getNodes().then((nodes)=>{
-    //       let data=formatData(nodes,["cpu","name","maxdisk"]);
-    //       setData(data);
-    //     });
-    //   }
-    //  })
-    // proxmoxClient.getNodes().then((nodes)=>{
-    //   let data=formatData(nodes,["cpu","name","maxdisk"]);
-    //   setData(data);
-    // });
     console.log(proxmoxClient);
     proxmoxClient.getNodes().then((nodes) => {
       let data = formatData(nodes, ["cpu", "name", "maxdisk"]);
