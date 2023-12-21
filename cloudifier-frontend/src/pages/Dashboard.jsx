@@ -9,7 +9,6 @@ export default function Dashboard() {
   const { showToast, setToastPosition } = useToast();
   const history = useHistory();
   useEffect(() => {
-
     if (!isAuth) {
       history.push("/login");
 
