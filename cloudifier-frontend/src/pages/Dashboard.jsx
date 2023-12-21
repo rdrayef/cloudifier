@@ -1,26 +1,36 @@
 import { useEffect } from "react";
-import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import routes from "../routes/route.js";
 import Menu from "../components/Menu/Menu.jsx";
-export default function Dashbored() {
+import useProxmox from "../config/Store.js";
+import { Route, useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import useToast from "../hooks/useToast.js";
+export default function Dashboard() {
+  const isAuth = useProxmox((state) => state.isAuth);
+  const { showToast, setToastPosition } = useToast();
+  const history = useHistory();
   useEffect(() => {
-    console.log("fffff")
-  }, []);
+    if (!isAuth) {
+      history.push("/login");
 
+      showToast("You need to login first", "error");
+    }
+  }, []);
   return (
     <div>
       <Menu />
 
-      <div className="container">
-        {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            component={route.component}
-          />
-        ))}
-      </div>
+      {isAuth && (
+        <div className="container">
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              component={route.component}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
