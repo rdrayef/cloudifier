@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink  } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Menu.css"; // Import your CSS file
 import LoginForm from "../Forms/LoginForm";
 import useProxmox from "../../config/Store";
@@ -9,8 +9,8 @@ import Cookies from "universal-cookie";
 const Menu = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showServicesMenu, setShowServicesMenu] = useState(false);
-  const isAuth = useProxmox((state) => state.isAuth)
-  const cookies = new Cookies();
+  const isAuth = useProxmox((state) => state.isAuth);
+  const logout = useProxmox((state) => state.logout);
 
   const toggleLoginForm = () => {
     console.log("Login Page");
@@ -18,10 +18,9 @@ const Menu = () => {
   };
 
   const handleLogout = () => {
-    cookies.remove('PVEAuthCookie');
-    cookies.remove('CSRFPreventionToken');
-    document.location.href = '/login'
-  }
+    logout();
+    document.location.href = "/login";
+  };
   const toggleServicesMenu = () => {
     setShowServicesMenu(!showServicesMenu);
   };
@@ -35,39 +34,41 @@ const Menu = () => {
       </div>
 
       <div>
-        <NavLink  to="/" className="menu-link">
+        <NavLink to="/" className="menu-link">
           Home
-        </NavLink >
-        <NavLink  to="/machines" className="menu-link">
+        </NavLink>
+        <NavLink to="/machines" className="menu-link">
           Machines
-        </NavLink >
+        </NavLink>
         <span className="menu-link" onClick={toggleServicesMenu}>
           Services
           {showServicesMenu && (
             <div className="submenu">
-              <NavLink  to="/storage" className="submenu-link">
+              <NavLink to="/storage" className="submenu-link">
                 Storage
-              </NavLink >
-              <NavLink  to="/database" className="submenu-link">
+              </NavLink>
+              <NavLink to="/database" className="submenu-link">
                 Database
-              </NavLink >
+              </NavLink>
               {/* Add other service links */}
             </div>
           )}
         </span>
-        <NavLink  to="/storage" className="menu-link">
+        <NavLink to="/storage" className="menu-link">
           About us
-        </NavLink >
+        </NavLink>
       </div>
 
-      {isAuth ?
-      (<div>
-        <span onClick={()=>handleLogout()}>Logout</span>
-      </div> ):
-      (<div>
-        <span onClick={toggleLoginForm}>Login</span>
-        {showLoginForm && <LoginForm toggleLoginForm={toggleLoginForm} />}
-      </div>)}
+      {isAuth ? (
+        <div>
+          <span onClick={() => handleLogout()}>Logout</span>
+        </div>
+      ) : (
+        <div>
+          <span onClick={toggleLoginForm}>Login</span>
+          {showLoginForm && <LoginForm toggleLoginForm={toggleLoginForm} />}
+        </div>
+      )}
     </nav>
   );
 };

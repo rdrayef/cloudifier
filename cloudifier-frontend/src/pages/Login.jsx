@@ -4,24 +4,18 @@ import useProxmox from "../config/Store";
 import useToast from "../hooks/useToast";
 import { useEffect } from "react";
 
-
 const Login = () => {
-    const isAuth = useProxmox((state) => state.isAuth);
-    const { showToast, setToastPosition } = useToast();
-    const history = useHistory();
-    useEffect(() => {
-      if (isAuth) {
-        history.push("/machines");
-  
-        showToast("You are connected", "info");
-      }
-    }, []);
+  const isAuth = useProxmox((state) => state.isAuth);
+  const { showToast, setToastPosition } = useToast();
+  const history = useHistory();
+  useEffect(() => {
+    if (isAuth) {
+      history.push("/machines");
+      showToast("You are connected", "info");
+    }
+  }, []);
 
-    return (
-        <LoginForm />
-    );
-
-}
-
+  return <LoginForm />;
+};
 
 export default Login;
