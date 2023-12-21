@@ -156,4 +156,4 @@ function MachinesPage() {
   );
 }
 
-export default MachinesPage;
+export default MachinesPage;
