@@ -4,8 +4,8 @@ import React from "react";
 function Home() {
 
   return (
-    <div>
-      <span>Cloudfier App</span>
+    <div className="w-full flex justify-center align-middle text-center" >
+      <span className="font-extralight text-3xl" >Cloudfier App</span>
     </div>
   );
 }
