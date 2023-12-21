@@ -57,7 +57,7 @@ function MachinesTable({ title, machines, isVms }) {
                       {machines.map((item, key) => (
                         <TableLine
                           machine={item}
-                          image={key}
+                          image={key % 5}
                           key={key}
                           isVM={isVms}
                         />
