@@ -3,6 +3,7 @@ import MachinesTable from "../components/Tables/MachinesTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import useProxmox from "../config/Store";
 import FormatIso from "../utils/FormatIso";
+import ModalForm from "../components/modal/ModalForm";
 
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
@@ -79,6 +80,9 @@ function MachinesPage() {
     return () => clearInterval(id);
   }, []);
 
+
+
+  //Add component <CreateBackup /> he has as props  {vmid ,...}
   return (
     <div className="mx-auto mt-5">
       <Tabs className="border-b bg-gray-100 rounded- h-screen">
@@ -92,6 +96,9 @@ function MachinesPage() {
         </TabList>
         <TabPanel>
           <div className="py-2">
+            <div className="flex justify-end">
+              <ModalForm images={listIso} refetch={refetchMachines} />
+            </div>
             <MachinesTable title="List of your machines" machines={machines} />
           </div>
         </TabPanel>
