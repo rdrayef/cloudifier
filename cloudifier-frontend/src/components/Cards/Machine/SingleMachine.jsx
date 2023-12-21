@@ -1,12 +1,10 @@
 import { ReactiveLineChart } from "../../Charts";
+import { DoughnutChart } from "../../Charts/DoughnutChart";
 import { useReactiveData } from "../../Charts/useReactiveChart";
-import useProxmox from "../../../config/Store";
 
-const SingleMachine = () => {
+const SingleMachine = ({node,vmid}) => {
 
-  const proxmoxClient = useProxmox((state) => state.proxmoxClient)
-  const data = useReactiveData(10,proxmoxClient.getNodeStatus())
-
+  const data = useReactiveData(node,vmid, 10)
 
 
 
@@ -15,7 +13,8 @@ const SingleMachine = () => {
     <div className="w-full">
        <div>Our Machine</div>
        <div className="w-1/4">
-       <ReactiveLineChart className=" shadow-sm" objects={data} title="Pie chart" />
+       <ReactiveLineChart className=" shadow-sm" objects={data} title="CPU usage" />
+       {/* <DoughnutChart className=" shadow-sm" objects={{}} title="CPU usage" /> */}
       </div>
     </div>
 

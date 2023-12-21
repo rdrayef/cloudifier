@@ -15,17 +15,14 @@ const prepareObject = (objects) =>{
     return { labels, datas, backgrounds, borders };
 }
 
-const getConfigForCharts = (objects)=>{
+const getConfigForCharts = (objects,options)=>{
     const { labels, datas, backgrounds, borders } = prepareObject(objects);
     const config = {
         labels : labels,
         datasets : [
             {
-                data : datas,
-                backgroundColor: backgrounds,
-                borderColor: borders,
-                borderWidth: 1,
-                
+                ...options,
+                data : datas, 
             }
         ]
     }

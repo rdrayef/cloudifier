@@ -1,23 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
+import useProxmox from '../../config/Store';
 
+export const useReactiveData = (node, vmid, length) => { 
+  const proxmoxClient = useProxmox((state) => state.proxmoxClient);
+  const [data, setData] = useState([]);
 
-export const useReactiveData = (callback, length) => {
+  const updateChart = async () => {
+    try {
+      const info = await proxmoxClient.getVMStatus(node, vmid);
+      const date = new Date();
 
-    const [data, setData] = useState([]);
-    const updateChart = ()=>{
-        const date = new Date();
-        data.push({
+      setData((prevData) => [
+        ...prevData,
+        {
           label: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-          data: callback()
-        })
-        setData([...data])
-        if(data.length === length)
-        data.shift()  
-    }
+          data: info.cpu * 95,
+        },
+      ]);
 
-    useEffect(() => {
-        setInterval(function(){updateChart()}, 2000);
-    }, []);
-    
-    return data;
-}
+      if (data.length === length) {
+        setData((prevData) => prevData.slice(1));
+      }
+    } catch (error) {
+      console.error('Error updating chart:', error);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(updateChart, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [node, vmid, length, proxmoxClient]);
+
+  return data;
+};

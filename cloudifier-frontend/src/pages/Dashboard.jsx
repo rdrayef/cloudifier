@@ -17,8 +17,6 @@ export default function Dashboard() {
   }, []);
   return (
     <div>
-      <Menu />
-
       {isAuth && (
         <div className="container">
           {routes.map((route, index) => (
