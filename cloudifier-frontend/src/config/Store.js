@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import Cookies from "universal-cookie";
 import ProxmoxClient from "./ProxmoxClient";
+import { URL } from "../data/projectInfo";
 
-const client = new ProxmoxClient("https://192.168.1.10:8006");
+const client = new ProxmoxClient(URL);
 const cookies = new Cookies();
 const useProxmox = create((set) => ({
   proxmoxClient: client,

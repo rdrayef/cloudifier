@@ -1,7 +1,7 @@
 import React from "react";
 import TableLine from "./TableLine";
 
-function MachinesTable({ title, machines }) {
+function MachinesTable({ title, machines, isVms }) {
   return (
     <>
       <link
@@ -47,6 +47,7 @@ function MachinesTable({ title, machines }) {
                         <th className="pb-3 pr-5 text-start min-w-[50px]">
                           ACTIONS
                         </th>
+                        <th className="pb-3 text-start min-w-[50px]">BACKUP</th>
                         <th className="pb-3 text-start min-w-[50px]">
                           DETAILS
                         </th>
@@ -54,7 +55,12 @@ function MachinesTable({ title, machines }) {
                     </thead>
                     <tbody>
                       {machines.map((item, key) => (
-                        <TableLine machine={item} key={key} />
+                        <TableLine
+                          machine={item}
+                          image={key}
+                          key={key}
+                          isVM={isVms}
+                        />
                       ))}
                     </tbody>
                   </table>

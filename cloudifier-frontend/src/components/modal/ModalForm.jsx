@@ -2,10 +2,18 @@
 import React, { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import useProxmox from "../../config/Store";
+import { NODE } from "../../data/projectInfo";
 const ModalForm = ({ images, refetch }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isoOptions, setIsoOptions] = useState([]);
-  const { register, handleSubmit, control, reset } = useForm();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm();
   const promoxClient = useProxmox((state) => state.proxmoxClient);
   useMemo(() => {
     setIsoOptions(images);
@@ -20,14 +28,9 @@ const ModalForm = ({ images, refetch }) => {
   };
 
   const handleCreate = (data) => {
-    console.log(data);
+    console.log(NODE);
     promoxClient
-      .createVM(
-        "org",
-        data.idMachine,
-        data.machineName,
-        "local:iso/ubuntu-22.04.3-live-server-amd64.iso"
-      )
+      .createVM(NODE, data.idMachine, data.machineName, data.iso)
       .then((res) => {
         reset();
         refetch();
@@ -82,6 +85,11 @@ const ModalForm = ({ images, refetch }) => {
                       placeholder="Machine Name"
                       {...register("machineName", { required: true })}
                     />
+                    {errors.machineName && (
+                      <span className="text-red-500">
+                        Machine Name is required
+                      </span>
+                    )}
                   </div>
                   <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label
@@ -97,6 +105,9 @@ const ModalForm = ({ images, refetch }) => {
                       placeholder="Node"
                       {...register("node", { required: true })}
                     />
+                    {errors.node && (
+                      <span className="text-red-500">Node is required</span>
+                    )}
                   </div>
                   <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label
@@ -112,6 +123,9 @@ const ModalForm = ({ images, refetch }) => {
                       placeholder="VMID"
                       {...register("idMachine", { required: true })}
                     />
+                    {errors.idMachine && (
+                      <span className="text-red-500">VMID is required</span>
+                    )}
                   </div>
                   <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label
@@ -130,16 +144,20 @@ const ModalForm = ({ images, refetch }) => {
                           {...field}
                           key={field.length}
                           onChange={(e) => field.onChange(e.target.value)}
+                          {...register("iso", { required: true })}
                           className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         >
-                          {isoOptions.map((iso) => (
-                            <option key={iso.name} value={iso.image}>
+                          {isoOptions.map((iso, i) => (
+                            <option key={i} value={iso.image}>
                               {iso.name}
                             </option>
                           ))}
                         </select>
                       )}
                     />
+                    {errors.iso && (
+                      <span className="text-red-500">Iso is required</span>
+                    )}
                   </div>
                   <div className="flex items-center border-b m-auto py-2">
                     {/* center button with info color */}

@@ -349,7 +349,6 @@ export default class ProxmoxClient {
       return response.data;
     } catch (error) {
       console.error(`Error starting container ${vmid} on node ${node}:`, error);
-      throw error;
     }
   }
 
@@ -361,7 +360,6 @@ export default class ProxmoxClient {
       return response.data;
     } catch (error) {
       console.error(`Error stopping container ${vmid} on node ${node}:`, error);
-      throw error;
     }
   }
 

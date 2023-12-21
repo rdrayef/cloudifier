@@ -4,6 +4,7 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import useProxmox from "../config/Store";
 import FormatIso from "../utils/FormatIso";
 import ModalForm from "../components/modal/ModalForm";
+import { NODE } from "../data/projectInfo";
 
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
@@ -13,7 +14,7 @@ function MachinesPage() {
   const [listIso, setListIso] = useState([]); // [{label: "Ubuntu", value: "local:iso/ubuntu-22.04.3-live-server-amd64.iso"}
   const refetchMachines = async () => {
     try {
-      let machines = await proxmoxClient.getVMList("org");
+      let machines = await proxmoxClient.getVMList(NODE);
       machines = machines
         .map((m) => ({
           ...m,
@@ -28,9 +29,9 @@ function MachinesPage() {
 
   const refetchContainers = async () => {
     try {
-      let containers = await proxmoxClient.getContainersList("org");
+      let containers = await proxmoxClient.getContainersList(NODE);
       containers = containers
-        .map((m) => ({
+        .map((m, i) => ({
           ...m,
           caller: handleStartStopLXC,
         }))
@@ -44,8 +45,8 @@ function MachinesPage() {
   const handleStartStopVM = (machine, start, stop) => {
     const actionPromise =
       machine.status === "stopped"
-        ? proxmoxClient.startVM("org", machine.vmid)
-        : proxmoxClient.stopVM("org", machine.vmid);
+        ? proxmoxClient.startVM(NODE, machine.vmid)
+        : proxmoxClient.stopVM(NODE, machine.vmid);
 
     actionPromise.then((res) => {
       refetchMachines();
@@ -55,8 +56,8 @@ function MachinesPage() {
   const handleStartStopLXC = (machine, start, stop) => {
     const actionPromise =
       machine.status === "stopped"
-        ? proxmoxClient.startContainer("org", machine.vmid)
-        : proxmoxClient.stopContainer("org", machine.vmid);
+        ? proxmoxClient.startContainer(NODE, machine.vmid)
+        : proxmoxClient.stopContainer(NODE, machine.vmid);
 
     actionPromise.then((res) => {
       refetchContainers();
@@ -69,18 +70,17 @@ function MachinesPage() {
       await refetchContainers();
     };
     async function iso() {
-      const res = await proxmoxClient.getISOImages("org", "local");
+      const res = await proxmoxClient.getISOImages(NODE, "local");
       const formatedIso = FormatIso(res);
       setListIso(formatedIso);
     }
+
     iso();
     fetchData();
-    const id = setInterval(fetchData, 1000);
+    const id = setInterval(fetchData, 2000);
     setIntervalId(id);
     return () => clearInterval(id);
   }, []);
-
-
 
   //Add component <CreateBackup /> he has as props  {vmid ,...}
   return (
@@ -99,7 +99,11 @@ function MachinesPage() {
             <div className="flex justify-end">
               <ModalForm images={listIso} refetch={refetchMachines} />
             </div>
-            <MachinesTable title="List of your machines" machines={machines} />
+            <MachinesTable
+              title="List of your machines"
+              machines={machines}
+              isVms={true}
+            />
           </div>
         </TabPanel>
         <TabPanel>
@@ -107,6 +111,7 @@ function MachinesPage() {
             <MachinesTable
               title="List of your containers"
               machines={containers}
+              isVms={false}
             />
           </div>
         </TabPanel>

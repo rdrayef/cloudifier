@@ -2,17 +2,17 @@ import React from "react";
 import formatDiskData from "../../utils/FormatDiskData";
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { MdBackup } from "react-icons/md";
 
-export default function TableLine({ machine }) {
+export default function TableLine({ machine, isVM, image }) {
   const history = useHistory();
-
   const moreDetails = () => {
     history.push({
-      pathname: "/machine-details", 
-      state: { vmid : machine.vmid }, 
-     });
-    console.log(machine)
-  }
+      pathname: "/machine-details",
+      state: { vmid: machine.vmid, isVM: isVM },
+    });
+    // console.log({ vmid: machine.vmid, isVM: isVM });
+  };
 
   return (
     <tr className="border-b border-dashed last:border-b-0">
@@ -20,7 +20,7 @@ export default function TableLine({ machine }) {
         <div className="flex items-center">
           <div className="relative inline-block shrink-0 rounded-2xl me-3">
             <img
-              src={"images/" + machine.template + ".png"}
+              src={"images/iso/" + image + ".png"}
               className="w-[50px] h-[50px] inline-block shrink-0 rounded-2xl"
               alt=""
             />
@@ -78,9 +78,20 @@ export default function TableLine({ machine }) {
           </span>
         </button>
       </td>
+      <td className="p-3 pr-0 flex flex-row justify-center ">
+        <MdBackup
+          size={24}
+          className="cursor-pointer"
+          color={Math.random() > 0.5 ? "green" : "red"}
+          onClick={() => {
+            machine.createBackup();
+          }}
+        />
+      </td>
       <td className="p-3 pr-0 ">
-        <button className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
-          onClick={()=>moreDetails()}
+        <button
+          className="ml-auto relative text-secondary-dark bg-light-dark hover:text-primary flex items-center h-[25px] w-[25px] text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-200 ease-in-out shadow-none border-0 justify-center"
+          onClick={() => moreDetails()}
         >
           <span className="flex items-center justify-center p-0 m-0 leading-none shrink-0 ">
             <svg

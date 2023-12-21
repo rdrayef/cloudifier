@@ -3,8 +3,8 @@ import { ReactiveLineChart } from "../../Charts";
 import { DoughnutChart } from "../../Charts/DoughnutChart";
 import { useReactiveData } from "../../Charts/useReactiveChart";
 
-const SingleMachine = ({ node, vmid }) => {
-  const cpuData = useReactiveData(node, vmid, 10);
+const SingleMachine = ({ node, vmid, type }) => {
+  const { cpuData, memData } = useReactiveData(node, vmid, 10, type);
   return (
     <>
       <div>Our Machine</div>
@@ -19,8 +19,8 @@ const SingleMachine = ({ node, vmid }) => {
         <div className="w-1/4">
           <DoughnutChart
             className=" shadow-sm"
-            // objects={}
-            title="CPU usage"
+            objects={memData}
+            title="Memory usage"
           />
         </div>
       </div>
