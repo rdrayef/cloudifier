@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import ProxmoxClient from "./ProxmoxClient";
 
-const client = new ProxmoxClient("https://192.168.100.206:8006");
+const client = new ProxmoxClient("https://192.168.1.12:8006");
 
 const useProxmox = create((set) => ({
   proxmoxClient: client,

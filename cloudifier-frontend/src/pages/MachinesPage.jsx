@@ -2,32 +2,44 @@ import React, { useEffect, useState } from "react";
 import MachinesTable from "../components/Tables/MachinesTable";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import useProxmox from "../config/Store";
-
+import ModalForm from "../components/modal/ModalForm";
+import FormatIso from "../utils/FormatIso";
 function MachinesPage() {
   const proxmoxClient = useProxmox((state) => state.proxmoxClient);
-
+  const [listIso, setListIso] = useState([]);
+  useEffect(() => {
+    async function iso() {
+      const res = await proxmoxClient.getISOImages("org", "local");
+      const formatedIso = FormatIso(res);
+      setListIso(formatedIso);
+    }
+    iso();
+  }, []);
+  const refetchMachines = () => {
+    async function getMachines() {
+      let machines = await proxmoxClient.getVMList("org");
+      machines = machines.map((m) => ({
+        ...m,
+        caller: handleStartStopVM,
+      }));
+      setMachines(machines);
+    }
+    getMachines();
+  };
   const [machines, setMachines] = useState([]);
   const [containers, setContainers] = useState([]);
   const handleStartStopVM = (machine, start, stop) => {
     let data = null;
     if (machine.status === "stopped") {
       proxmoxClient.startVM("org", machine.vmid).then((res) => {
-        setMachines((prev) => {
-          prev.forEach((m) => {
-            if (m.vmid == machine.vmid) m.status = "running";
-          });
-          return [...prev];
-        });
+        refetchMachines();
       });
 
       // update the status of the machine
     } else {
       proxmoxClient.stopVM("org", machine.vmid).then((res) => {
         setMachines((prev) => {
-          prev.forEach((m) => {
-            if (m.vmid == machine.vmid) m.status = "stopped";
-          });
-          return [...prev];
+          refetchMachines();
         });
       });
     }
@@ -78,30 +90,6 @@ function MachinesPage() {
     getContainers();
   }, []);
 
-  // const containers = [
-  //   {
-  //     netin: 684,
-  //     disk: 10956800,
-  //     diskread: 10354688,
-  //     vmid: "103",
-  //     swap: 0,
-  //     name: "root",
-  //     maxmem: 536870912,
-  //     cpu: 0,
-  //     status: "running",
-  //     pid: 7514,
-  //     uptime: 13,
-  //     maxswap: 536870912,
-  //     maxdisk: 8350298112,
-  //     cpus: 1,
-  //     diskwrite: 8192,
-  //     netout: 1270,
-  //     type: "lxc",
-  //     mem: 1630208,
-  //     template: "ubuntu",
-  //   },
-  // ];
-
   return (
     <div className="mx-auto mt-5">
       <Tabs className="border-b bg-gray-100 rounded- h-screen">
@@ -112,9 +100,17 @@ function MachinesPage() {
           <Tab className="text-gray-700 py-4 px-6 border-b-4 border-transparent hover:border-orange-600 focus:outline-none cursor-pointer">
             Containers
           </Tab>
+          {/* create Vm modal */}
+          {/* <Tab className="text-gray-700 py-4 px-6 border-b-4 border-transparent hover:border-orange-600 focus:outline-none cursor-pointer">
+            <ModalForm />
+          </Tab> */}
+          {/* create Vm modal */}
         </TabList>
         <TabPanel>
           <div className="py-2">
+            <div className="flex justify-end">
+              <ModalForm images={listIso} refetch={refetchMachines} />
+            </div>
             <MachinesTable title="List of your machines" machines={machines} />
           </div>
         </TabPanel>
